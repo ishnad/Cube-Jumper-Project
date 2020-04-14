@@ -5,6 +5,8 @@ public class PlayerMovement : MonoBehaviour
 {
 	Scene scene;
 
+    public GameObject particlePrefab = null;
+
 	private Transform walls;
 	private Transform hearts;
 
@@ -193,8 +195,13 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else if (collision.gameObject.tag == "Wall")
 		{
-			if (!tookDamage) // adds points if player didnt take damagem that move
-				pointCount++;
+            if (!tookDamage) // adds points if player didnt take damagem that move
+            {
+                pointCount++;
+                GameObject particle = particlePrefab;
+                Instantiate(particle, collision.transform); // particle
+                Destroy(particle.gameObject);
+            }
 			Reset();
 		}
 	}

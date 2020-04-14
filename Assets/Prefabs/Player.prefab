@@ -97,6 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b0d0514d204544882a3fc3223b4439, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particlePrefab: {fileID: 356915038638960960, guid: 637851af9163005499816f6d2b780013,
+    type: 3}
+  debugWithArrowKeys: 1
 --- !u!114 &2693313258708804001
 MonoBehaviour:
   m_ObjectHideFlags: 0
