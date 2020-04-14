@@ -10,6 +10,7 @@ TagManager:
   - Spike
   - HeartTransform
   - WallTransform
+  - SpikeTransform
   layers:
   - Default
   - TransparentFX

@@ -12,7 +12,20 @@ public class PlayerMovement : MonoBehaviour
 
 	private int heartCount; // count how many hearts in the scene
 	private bool tookDamage = false; // check if player takes damage
-	private int pointCount = -1; // point counter set to -1 so when start, it goes to 0
+
+	public bool TookDamage
+	{
+		set { tookDamage = value; }
+	}
+
+	private bool canGainPoint = false;
+	
+	public bool CanGainPoint
+	{
+		set { canGainPoint = value; }
+	}
+
+	private int pointCount = 0; // point counter set to -1 so when start, it goes to 0
 
 	public int PointCount
 	{
@@ -21,17 +34,14 @@ public class PlayerMovement : MonoBehaviour
 
 	private PlayerStats playerStats;
 
-	private float playerSpeed = 10.0f; // set player speed
+	private float playerSpeed = 12.0f; // set player speed
 	private float playerSpeedReset; // to reset player speed
 
 	private float diffCheck = 0f; // to check if player moves diagonally or straight
 
-	// If the touch is longer than MAX_SWIPE_TIME, we dont consider it a swipe
-	public const float MAX_SWIPE_TIME = 0.5f;
-
 	// Factor of the screen width that we consider a swipe
 	// 0.17 works well for portrait mode 16:9 phone
-	public const float MIN_SWIPE_DISTANCE = 0.17f;
+	//public const float MIN_SWIPE_DISTANCE = 0.17f;
 
 	public static bool swipedRight = false;
 	public static bool swipedLeft = false;
@@ -40,7 +50,6 @@ public class PlayerMovement : MonoBehaviour
 	public bool debugWithArrowKeys = true;
 
 	Vector2 startPos;
-	float startTime;
 
 	void Start()
 	{
@@ -63,6 +72,9 @@ public class PlayerMovement : MonoBehaviour
 			SwipeChecker();
 
 		PlayerMove();
+
+		if (!tookDamage && canGainPoint)
+			pointCount++;
 
 		if (playerStats.Health <= 0) // if player dies
 		{
@@ -130,13 +142,13 @@ public class PlayerMovement : MonoBehaviour
 
 	private void SwipeChecker()
 	{
-		if (debugWithArrowKeys)
-		{
-			swipedDown = swipedDown || Input.GetKeyDown(KeyCode.DownArrow);
-			swipedUp = swipedUp || Input.GetKeyDown(KeyCode.UpArrow);
-			swipedRight = swipedRight || Input.GetKeyDown(KeyCode.RightArrow);
-			swipedLeft = swipedLeft || Input.GetKeyDown(KeyCode.LeftArrow);
-		}
+		//if (debugWithArrowKeys)
+		//{
+		//	swipedDown = swipedDown || Input.GetKeyDown(KeyCode.DownArrow);
+		//	swipedUp = swipedUp || Input.GetKeyDown(KeyCode.UpArrow);
+		//	swipedRight = swipedRight || Input.GetKeyDown(KeyCode.RightArrow);
+		//	swipedLeft = swipedLeft || Input.GetKeyDown(KeyCode.LeftArrow);
+		//}
 
 		if (Input.touches.Length > 0)
 		{
@@ -144,19 +156,15 @@ public class PlayerMovement : MonoBehaviour
 			if (touch.phase == TouchPhase.Began)
 			{
 				startPos = new Vector2(touch.position.x / Screen.width, touch.position.y / Screen.width);
-				startTime = Time.time;
 			}
 			if (touch.phase == TouchPhase.Ended)
 			{
-				if (Time.time - startTime > MAX_SWIPE_TIME) // press too long
-					return;
-
 				Vector2 endPos = new Vector2(touch.position.x / Screen.width, touch.position.y / Screen.width);
 
 				Vector2 swipe = new Vector2(endPos.x - startPos.x, endPos.y - startPos.y);
 
-				if (swipe.magnitude < MIN_SWIPE_DISTANCE) // Too short swipe
-					return;
+				//if (swipe.magnitude < MIN_SWIPE_DISTANCE) // Too short swipe
+				//	return;
 
 				if (Mathf.Abs(swipe.x) > Mathf.Abs(swipe.y)) // Horizontal swipe
 				{
@@ -191,19 +199,25 @@ public class PlayerMovement : MonoBehaviour
 			playerStats.Health--; // minus health
 			heartCount = hearts.transform.childCount; // check how many hearts on the screen
 			Destroy(hearts.transform.GetChild(heartCount - 1).gameObject); // destroy a heart
-			tookDamage = true; // took damage
 		}
 		else if (collision.gameObject.tag == "Wall")
 		{
-            if (!tookDamage) // adds points if player didnt take damagem that move
+            if (!tookDamage) // if player didnt take damage that move
             {
-                pointCount++;
                 var particle = Instantiate(particlePrefab, collision.transform); // particle;
 
 				Destroy(particle.gameObject, 0.3f);
             }
 			Reset();
 		}
+	}
+
+	private void OnTriggerStay2D(Collider2D collision)
+	{
+		if (collision.gameObject.tag == "Spike") // to reset tookDamage
+			tookDamage = true; // took damage
+		else
+			tookDamage = false;
 	}
 
 	// reset booleans and speed
@@ -214,6 +228,5 @@ public class PlayerMovement : MonoBehaviour
 		swipedLeft = false;
 		swipedUp = false;
 		swipedDown = false;
-		tookDamage = false;
 	}
 }
