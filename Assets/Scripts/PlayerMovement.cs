@@ -47,22 +47,22 @@ public class PlayerMovement : MonoBehaviour
 		 */
 		if (swipedUp)
 		{
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, 3 * Time.deltaTime);
+			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
 			Debug.Log("Up Swipe");
 		}
 		if (swipedDown)
 		{
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, 3 * Time.deltaTime);
+			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
 			Debug.Log("Down Swipe");
 		}
 		if (swipedLeft)
 		{
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, 3 * Time.deltaTime);
+			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
 			Debug.Log("Left Swipe");
 		}
 		if (swipedRight)
 		{
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, 3 * Time.deltaTime);
+			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
 			Debug.Log("Right Swipe");
 		}
 	}
