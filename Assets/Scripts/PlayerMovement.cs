@@ -198,9 +198,9 @@ public class PlayerMovement : MonoBehaviour
             if (!tookDamage) // adds points if player didnt take damagem that move
             {
                 pointCount++;
-                GameObject particle = particlePrefab;
-                Instantiate(particle, collision.transform); // particle
-                Destroy(particle.gameObject);
+                var particle = Instantiate(particlePrefab, collision.transform); // particle;
+
+				Destroy(particle.gameObject, 0.3f);
             }
 			Reset();
 		}
