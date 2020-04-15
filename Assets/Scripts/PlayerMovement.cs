@@ -25,18 +25,14 @@ public class PlayerMovement : MonoBehaviour
 		set { canGainPoint = value; }
 	}
 
-	private int pointCount = 0; // point counter set to -1 so when start, it goes to 0
-
-	public int PointCount
-	{
-		get { return pointCount; }
-	}
+	private bool diffCheckOnce = false;
 
 	private PlayerStats playerStats;
 
-	private float playerSpeed = 12.0f; // set player speed
+	private float playerSpeed = 15.0f; // set player speed
+	private float playerSpeedStraightMultiplier = 2.0f; // set player speed
 	private float playerSpeedReset; // to reset player speed
-
+	private float offset = 0.3f;
 	private float diffCheck = 0f; // to check if player moves diagonally or straight
 
 	// Factor of the screen width that we consider a swipe
@@ -68,17 +64,15 @@ public class PlayerMovement : MonoBehaviour
 
 	public void Update()
 	{
-		if (!swipedUp && !swipedDown && !swipedLeft && !swipedRight) // this ensures we dont get double input
-			SwipeChecker();
-
-		PlayerMove();
-
-		if (!tookDamage && canGainPoint)
-			pointCount++;
-
-		if (playerStats.Health <= 0) // if player dies
+		if (playerStats.Health > 0) // player alive
 		{
-			SceneManager.LoadScene(scene.name);
+			if (!swipedUp && !swipedDown && !swipedLeft && !swipedRight) // this ensures we dont get double input
+				SwipeChecker();
+
+			PlayerMove();
+
+			if (!tookDamage && canGainPoint)
+				playerStats.PointCount++;
 		}
 	}
 
@@ -93,62 +87,121 @@ public class PlayerMovement : MonoBehaviour
 		 * right = 3
 		 * second child is always 0
 		 */
-		if (swipedUp)
+		if (swipedUp) // up
 		{
 			diffCheck = transform.position.y - walls.GetChild(0).GetChild(0).position.y; // checks distance between player and destination
 
-			if (diffCheck == 0f) // if player reaches destination
+			if (diffCheck <= -3.45f && !diffCheckOnce) // if player is moving straight
+			{
+				diffCheckOnce = true;
+				playerSpeed *= playerSpeedStraightMultiplier;
+			}
+			else if (diffCheck >= -offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
+				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+			}
+			else if (diffCheck == 0f) // if player reaches destination
+			{
+				diffCheckOnce = false;
 				swipedUp = false;
-			else if (diffCheck <= -3.45f) // if player is moving straight
-				playerSpeed *= 1.5f;
-
-			// moves towards destination
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
+			}
+			else
+			{
+				// moves towards destination
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
+				transform.Rotate(0f, 0f, 30f, Space.World);
+			}
 		}
-		if (swipedDown)
+		if (swipedDown) // down
 		{
-			diffCheck = transform.position.y - walls.GetChild(1).GetChild(0).position.y;
+			diffCheck = transform.position.y - walls.GetChild(1).GetChild(0).position.y; // checks distance between player and destination
 
-			if (diffCheck == 0f)
+			if (diffCheck >= 3.45f && !diffCheckOnce) // if player is moving straight
+			{
+				diffCheckOnce = true;
+				playerSpeed *= playerSpeedStraightMultiplier;
+			}
+			else if (diffCheck <= offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
+				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+			}
+			else if (diffCheck == 0f) // if player reaches destination
+			{
+				diffCheckOnce = false;
 				swipedDown = false;
-			else if (diffCheck >= 3.45f)
-				playerSpeed *= 1.5f;
-
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
+			}
+			else
+			{
+				// moves towards destination
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
+				transform.Rotate(0f, 0f, 30f, Space.World);
+			}
 		}
-		if (swipedLeft)
+		if (swipedLeft) // left
 		{
-			diffCheck = transform.position.x - walls.GetChild(2).GetChild(0).position.x;
+			diffCheck = transform.position.x - walls.GetChild(2).GetChild(0).position.x; // checks distance between player and destination
 
-			if (diffCheck == 0f)
+			if (diffCheck >= 3.45f && !diffCheckOnce) // if player is moving straight
+			{
+				diffCheckOnce = true;
+				playerSpeed *= playerSpeedStraightMultiplier;
+			}
+			else if (diffCheck <= offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
+				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+			}
+			else if (diffCheck == 0f) // if player reaches destination
+			{
+				diffCheckOnce = false;
 				swipedLeft = false;
-			else if (diffCheck >= 3.45f)
-				playerSpeed *= 1.5f;
-
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
+			}
+			else
+			{
+				// moves towards destination
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
+				transform.Rotate(0f, 0f, 30f, Space.World);
+			}
 		}
-		if (swipedRight)
+		if (swipedRight) // right
 		{
-			diffCheck = transform.position.x - walls.GetChild(3).GetChild(0).position.x;
+			diffCheck = transform.position.x - walls.GetChild(3).GetChild(0).position.x; // checks distance between player and destination
 
-			if (diffCheck == 0f)
+			if (diffCheck <= -3.45f && !diffCheckOnce) // if player is moving straight
+			{
+				diffCheckOnce = true;
+				playerSpeed *= playerSpeedStraightMultiplier;
+			}
+			else if (diffCheck >= -offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
+				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+			}
+			else if (diffCheck == 0f) // if player reaches destination
+			{
+				diffCheckOnce = false;
 				swipedRight = false;
-			else if (diffCheck <= -3.45f)
-				playerSpeed *= 1.5f;
-
-			transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
+			}
+			else
+			{
+				// moves towards destination
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
+				transform.Rotate(0f, 0f, 30f, Space.World);
+			}
 		}
 	}
 
 	private void SwipeChecker()
 	{
-		//if (debugWithArrowKeys)
-		//{
-		//	swipedDown = swipedDown || Input.GetKeyDown(KeyCode.DownArrow);
-		//	swipedUp = swipedUp || Input.GetKeyDown(KeyCode.UpArrow);
-		//	swipedRight = swipedRight || Input.GetKeyDown(KeyCode.RightArrow);
-		//	swipedLeft = swipedLeft || Input.GetKeyDown(KeyCode.LeftArrow);
-		//}
+		if (debugWithArrowKeys)
+		{
+			swipedDown = swipedDown || Input.GetKeyDown(KeyCode.DownArrow);
+			swipedUp = swipedUp || Input.GetKeyDown(KeyCode.UpArrow);
+			swipedRight = swipedRight || Input.GetKeyDown(KeyCode.RightArrow);
+			swipedLeft = swipedLeft || Input.GetKeyDown(KeyCode.LeftArrow);
+		}
 
 		if (Input.touches.Length > 0)
 		{
@@ -197,6 +250,7 @@ public class PlayerMovement : MonoBehaviour
 		if (collision.gameObject.tag == "Spike") // if player hits spike
 		{
 			playerStats.Health--; // minus health
+			tookDamage = true; // took damage
 			heartCount = hearts.transform.childCount; // check how many hearts on the screen
 			Destroy(hearts.transform.GetChild(heartCount - 1).gameObject); // destroy a heart
 		}
@@ -218,6 +272,16 @@ public class PlayerMovement : MonoBehaviour
 			tookDamage = true; // took damage
 		else
 			tookDamage = false;
+	}
+
+	public void RestartGame()
+	{
+		SceneManager.LoadScene(scene.name);
+	}
+
+	public void BackToMainMenu()
+	{
+		SceneManager.LoadScene("MainmenuScene");
 	}
 
 	// reset booleans and speed

@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-    private Text pointCount;
-
     private Transform hearts;
     private int health; // life counter
 
@@ -14,16 +11,17 @@ public class PlayerStats : MonoBehaviour
         set { health = value; }
     }
 
+    private int pointCount = 0;
+
+    public int PointCount
+    {
+        get { return pointCount; }
+        set { pointCount = value; }
+    }
+
     private void Start()
     {
         hearts = GameObject.FindGameObjectWithTag("HeartTransform").GetComponent<Transform>();
-        pointCount = GameObject.FindGameObjectWithTag("Point").GetComponent<Text>();
-
         health = hearts.transform.childCount;
-    }
-
-    void Update()
-    {
-        pointCount.text = GetComponent<PlayerMovement>().PointCount.ToString();
     }
 }

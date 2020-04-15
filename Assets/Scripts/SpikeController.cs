@@ -5,6 +5,7 @@ public class SpikeController : MonoBehaviour
     private Transform walls;
 
     private PlayerMovement player;
+    private PlayerStats playerStats;
 
     private int spikeNumber = -1;
     private int spikeNumber2 = -1;
@@ -29,11 +30,18 @@ public class SpikeController : MonoBehaviour
     {
         walls = GameObject.FindGameObjectWithTag("WallTransform").GetComponent<Transform>();
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>();
+        playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerStats>();
         warningTime = timeBetweenSpawn - warningTimeInterval;
         startTimeBetweenSpawn = timeBetweenSpawn;
     }
 
     void Update()
+    {
+        if (playerStats.Health > 0)
+            SpikeSpawner();
+    }
+
+    private void SpikeSpawner()
     {
         if (timeBetweenSpawn <= 0) // when it is time to spawn
         {
@@ -75,17 +83,19 @@ public class SpikeController : MonoBehaviour
 
                 if (firstSpikeCheck)
                 {
-                    player.CanGainPoint = true; // player can gain point during this once
-
                     transform.GetChild(spikeNumber).gameObject.SetActive(false); // make spike not there
+                    if (spikeNumber2 != -1)
+                        transform.GetChild(spikeNumber2).gameObject.SetActive(false); // make spike not there
+                    if (spikeNumber3 != -1)
+                        transform.GetChild(spikeNumber3).gameObject.SetActive(false); // make spike not there
+
+                    player.CanGainPoint = true; // player can gain point during this once
 
                     spikeNumber = Random.Range(0, 4); // random which spike to spawn
                     walls.GetChild(spikeNumber).GetComponent<SpriteRenderer>().color = Color.red; // set warning colour
 
                     if (secondDiffBoolean)
                     {
-                        if (spikeNumber2 != -1)
-                            transform.GetChild(spikeNumber2).gameObject.SetActive(false); // make spike not there
                         do
                         {
                             spikeNumber2 = Random.Range(0, 4);
@@ -95,8 +105,6 @@ public class SpikeController : MonoBehaviour
 
                     if (thirdDiffBoolean)
                     {
-                        if (spikeNumber3 != -1)
-                            transform.GetChild(spikeNumber3).gameObject.SetActive(false); // make spike not there
                         do
                         {
                             spikeNumber3 = Random.Range(0, 4);
@@ -114,9 +122,9 @@ public class SpikeController : MonoBehaviour
         }
         else
         {
-            if (player.PointCount >= secondDiffThreshold)
+            if (playerStats.PointCount >= secondDiffThreshold)
                 secondDiffBoolean = true;
-            if (player.PointCount >= thirdDiffThreshold)
+            if (playerStats.PointCount >= thirdDiffThreshold)
                 thirdDiffBoolean = true;
 
             timeBetweenSpawn -= Time.deltaTime; // timer reduce

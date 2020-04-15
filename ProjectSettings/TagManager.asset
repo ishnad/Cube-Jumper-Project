@@ -11,6 +11,7 @@ TagManager:
   - HeartTransform
   - WallTransform
   - SpikeTransform
+  - DeathScreen
   layers:
   - Default
   - TransparentFX
