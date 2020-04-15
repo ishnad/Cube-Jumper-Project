@@ -16,7 +16,7 @@ public class SpikeController : MonoBehaviour
     private float timeBetweenSpawn = 2f;
     private float startTimeBetweenSpawn;
     private float decreaseTime = 0.1f;
-    private float minTime = 1.2f;
+    private float minTime = 1.1f;
     private float warningTime;
     private float warningTimeInterval = 0.5f;
 

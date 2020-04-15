@@ -11,7 +11,11 @@ public class PlayerMovement : MonoBehaviour
 	private Transform hearts;
 
 	private int heartCount; // count how many hearts in the scene
+	
+	private Quaternion zeroQuaternion = Quaternion.Euler(0f, 0f, 0f);
+
 	private bool tookDamage = false; // check if player takes damage
+
 
 	public bool TookDamage
 	{
@@ -29,15 +33,15 @@ public class PlayerMovement : MonoBehaviour
 
 	private PlayerStats playerStats;
 
-	private float playerSpeed = 15.0f; // set player speed
+	private float playerSpeed = 12.0f; // set player speed
 	private float playerSpeedStraightMultiplier = 2.0f; // set player speed
 	private float playerSpeedReset; // to reset player speed
-	private float offset = 0.3f;
+	private float offset = 0.35f;
 	private float diffCheck = 0f; // to check if player moves diagonally or straight
 
 	// Factor of the screen width that we consider a swipe
 	// 0.17 works well for portrait mode 16:9 phone
-	//public const float MIN_SWIPE_DISTANCE = 0.17f;
+	public const float MIN_SWIPE_DISTANCE = 0.17f;
 
 	public static bool swipedRight = false;
 	public static bool swipedLeft = false;
@@ -96,21 +100,21 @@ public class PlayerMovement : MonoBehaviour
 				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
-			else if (diffCheck >= -offset) // 0.3 offset
-			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
-				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
 				diffCheckOnce = false;
 				swipedUp = false;
 			}
+			else if (diffCheck >= -offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
+				transform.rotation = zeroQuaternion;
+			}
 			else
 			{
 				// moves towards destination
 				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 30f, Space.World);
+				transform.Rotate(0f, 0f, 45f, Space.World);
 			}
 		}
 		if (swipedDown) // down
@@ -122,21 +126,21 @@ public class PlayerMovement : MonoBehaviour
 				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
-			else if (diffCheck <= offset) // 0.3 offset
-			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
-				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
 				diffCheckOnce = false;
 				swipedDown = false;
 			}
+			else if (diffCheck <= offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
+				transform.rotation = zeroQuaternion;
+			}
 			else
 			{
 				// moves towards destination
 				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 30f, Space.World);
+				transform.Rotate(0f, 0f, 45f, Space.World);
 			}
 		}
 		if (swipedLeft) // left
@@ -148,21 +152,21 @@ public class PlayerMovement : MonoBehaviour
 				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
-			else if (diffCheck <= offset) // 0.3 offset
-			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
-				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
 				diffCheckOnce = false;
 				swipedLeft = false;
 			}
+			else if (diffCheck <= offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
+				transform.rotation = zeroQuaternion;
+			}
 			else
 			{
 				// moves towards destination
 				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 30f, Space.World);
+				transform.Rotate(0f, 0f, 45f, Space.World);
 			}
 		}
 		if (swipedRight) // right
@@ -174,21 +178,21 @@ public class PlayerMovement : MonoBehaviour
 				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
-			else if (diffCheck >= -offset) // 0.3 offset
-			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
-				transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
 				diffCheckOnce = false;
 				swipedRight = false;
 			}
+			else if (diffCheck >= -offset) // 0.3 offset
+			{
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
+				transform.rotation = zeroQuaternion;
+			}
 			else
 			{
 				// moves towards destination
 				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 30f, Space.World);
+				transform.Rotate(0f, 0f, 45f, Space.World);
 			}
 		}
 	}
@@ -216,8 +220,8 @@ public class PlayerMovement : MonoBehaviour
 
 				Vector2 swipe = new Vector2(endPos.x - startPos.x, endPos.y - startPos.y);
 
-				//if (swipe.magnitude < MIN_SWIPE_DISTANCE) // Too short swipe
-				//	return;
+				if (swipe.magnitude < MIN_SWIPE_DISTANCE) // Too short swipe
+					return;
 
 				if (Mathf.Abs(swipe.x) > Mathf.Abs(swipe.y)) // Horizontal swipe
 				{
@@ -272,6 +276,9 @@ public class PlayerMovement : MonoBehaviour
 			tookDamage = true; // took damage
 		else
 			tookDamage = false;
+
+		//if (collision.gameObject.tag == "Wall")
+		//	Reset();
 	}
 
 	public void RestartGame()

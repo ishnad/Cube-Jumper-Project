@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuManager : MonoBehaviour
+public class GameMenuManager : MonoBehaviour
 {
     private Text pointCount;
     private PlayerStats playerStats;
