@@ -11,7 +11,7 @@ public class PlayerStats : MonoBehaviour
         set { health = value; }
     }
 
-    private int pointCount = 0;
+    public int pointCount = 0;
 
     public int PointCount
     {
