@@ -78,7 +78,9 @@ public class PlayerMovement : MonoBehaviour
 			PlayerMove();
 
 			if (!tookDamage && canGainPoint)
+			{
 				playerStats.PointCount++;
+			}
 		}
 	}
 
