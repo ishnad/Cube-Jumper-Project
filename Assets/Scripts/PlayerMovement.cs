@@ -38,6 +38,7 @@ public class PlayerMovement : MonoBehaviour
 	private float playerSpeedReset; // to reset player speed
 	private float offset = 0.35f;
 	private float diffCheck = 0f; // to check if player moves diagonally or straight
+	private int prevMove; // checks for prev move, follows wall number
 
 	// Factor of the screen width that we consider a swipe
 	// 0.17 works well for portrait mode 16:9 phone
@@ -62,7 +63,8 @@ public class PlayerMovement : MonoBehaviour
 		transform.position = walls.GetChild(1).GetChild(0).position;
 		
 		playerSpeedReset = playerSpeed;
-		
+		prevMove = 1;
+
 		Reset();
 	}
 
@@ -83,7 +85,8 @@ public class PlayerMovement : MonoBehaviour
 	private void PlayerMove()
 	{
 		float step = playerSpeed * Time.deltaTime; // how fast player moves with deltaTime
-
+		int currentWall;
+		float randomSpinValue;
 		/* wall number
 		 * top = 0
 		 * bottom = 1
@@ -93,107 +96,91 @@ public class PlayerMovement : MonoBehaviour
 		 */
 		if (swipedUp) // up
 		{
-			diffCheck = transform.position.y - walls.GetChild(0).GetChild(0).position.y; // checks distance between player and destination
+			currentWall = 0;
+			diffCheck = transform.position.y - walls.GetChild(currentWall).GetChild(0).position.y; // checks distance between player and destination
 
-			if (diffCheck <= -3.45f && !diffCheckOnce) // if player is moving straight
+			if (prevMove == 1) // if player is moving straight
 			{
-				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
-				diffCheckOnce = false;
 				swipedUp = false;
+				playerSpeed = playerSpeedReset;
 			}
-			else if (diffCheck >= -offset) // 0.3 offset
+			else // moves towards destination
 			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
-				transform.rotation = zeroQuaternion;
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(currentWall).GetChild(0).position, step);
+				randomSpinValue = Random.Range(15f, 75f);
+				transform.Rotate(0f, 0f, randomSpinValue, Space.World);
 			}
-			else
-			{
-				// moves towards destination
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(0).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 45f, Space.World);
-			}
+			prevMove = currentWall;
 		}
 		if (swipedDown) // down
 		{
-			diffCheck = transform.position.y - walls.GetChild(1).GetChild(0).position.y; // checks distance between player and destination
+			currentWall = 1;
+			diffCheck = transform.position.y - walls.GetChild(currentWall).GetChild(0).position.y; // checks distance between player and destination
 
-			if (diffCheck >= 3.45f && !diffCheckOnce) // if player is moving straight
+			if (prevMove == 0) // if player is moving straight
 			{
-				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
-				diffCheckOnce = false;
 				swipedDown = false;
+				playerSpeed = playerSpeedReset;
 			}
-			else if (diffCheck <= offset) // 0.3 offset
+			else // moves towards destination
 			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
-				transform.rotation = zeroQuaternion;
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(currentWall).GetChild(0).position, step);
+				randomSpinValue = Random.Range(15f, 75f);
+				transform.Rotate(0f, 0f, randomSpinValue, Space.World);
 			}
-			else
-			{
-				// moves towards destination
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(1).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 45f, Space.World);
-			}
+			prevMove = currentWall;
 		}
 		if (swipedLeft) // left
 		{
-			diffCheck = transform.position.x - walls.GetChild(2).GetChild(0).position.x; // checks distance between player and destination
-
-			if (diffCheck >= 3.45f && !diffCheckOnce) // if player is moving straight
+			currentWall = 2;
+			diffCheck = transform.position.x - walls.GetChild(currentWall).GetChild(0).position.x; // checks distance between player and destination
+			
+			if (prevMove == 3) // if player is moving straight
 			{
-				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
-				diffCheckOnce = false;
 				swipedLeft = false;
+				playerSpeed = playerSpeedReset;
 			}
-			else if (diffCheck <= offset) // 0.3 offset
+			else // moves towards destination
 			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
-				transform.rotation = zeroQuaternion;
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(currentWall).GetChild(0).position, step);
+				randomSpinValue = Random.Range(15f, 75f);
+				transform.Rotate(0f, 0f, randomSpinValue, Space.World);
 			}
-			else
-			{
-				// moves towards destination
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(2).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 45f, Space.World);
-			}
+			prevMove = currentWall;
 		}
 		if (swipedRight) // right
 		{
-			diffCheck = transform.position.x - walls.GetChild(3).GetChild(0).position.x; // checks distance between player and destination
+			currentWall = 3;
+			diffCheck = transform.position.x - walls.GetChild(currentWall).GetChild(0).position.x; // checks distance between player and destination
 
-			if (diffCheck <= -3.45f && !diffCheckOnce) // if player is moving straight
+			if (prevMove == 2) // if player is moving straight
 			{
-				diffCheckOnce = true;
 				playerSpeed *= playerSpeedStraightMultiplier;
 			}
 			else if (diffCheck == 0f) // if player reaches destination
 			{
-				diffCheckOnce = false;
 				swipedRight = false;
+				playerSpeed = playerSpeedReset;
 			}
-			else if (diffCheck >= -offset) // 0.3 offset
+			else // moves towards destination
 			{
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
-				transform.rotation = zeroQuaternion;
+				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(currentWall).GetChild(0).position, step);
+				randomSpinValue = Random.Range(15f, 75f);
+				transform.Rotate(0f, 0f, randomSpinValue, Space.World);
 			}
-			else
-			{
-				// moves towards destination
-				transform.position = Vector2.MoveTowards(new Vector2(transform.position.x, transform.position.y), walls.GetChild(3).GetChild(0).position, step);
-				transform.Rotate(0f, 0f, 45f, Space.World);
-			}
+			prevMove = currentWall;
 		}
 	}
 

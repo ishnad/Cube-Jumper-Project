@@ -16,7 +16,7 @@ public class SpikeController : MonoBehaviour
     private float timeBetweenSpawn = 2f;
     private float startTimeBetweenSpawn;
     private float decreaseTime = 0.1f;
-    private float minTime = 1.1f;
+    private float minTime = 1f;
     private float warningTime;
     private float warningTimeInterval = 0.5f;
 
@@ -52,8 +52,14 @@ public class SpikeController : MonoBehaviour
 
             if (secondDiffBoolean) // start of start time reduce
             {
-                if (startTimeBetweenSpawn > minTime) // if start time is more than minimum set time
-                    startTimeBetweenSpawn -= decreaseTime; // decrease the next start time
+                //if (startTimeBetweenSpawn > minTime) // if start time is more than minimum set time
+                //    startTimeBetweenSpawn -= decreaseTime; // decrease the next start time
+                float a;
+                if (startTimeBetweenSpawn > minTime)
+                    a = 0.99f;
+                else
+                    a = 0.995f;
+                startTimeBetweenSpawn = 2 * Mathf.Pow(a, playerStats.PointCount); //Mathf.Log(playerStats.PointCount, 5.0f);
             }
 
             walls.GetChild(spikeNumber).GetComponent<SpriteRenderer>().color = Color.white; // make no warning on wall

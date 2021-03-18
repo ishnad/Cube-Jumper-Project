@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameObjectScaler : MonoBehaviour
 {
@@ -18,5 +19,10 @@ public class GameObjectScaler : MonoBehaviour
         float desiredHalfHeight = 0.3f * unitsPerPixel * Screen.height;
 
         _camera.orthographicSize = desiredHalfHeight;
+    }
+
+    public void GoToGameScene()
+    {
+        SceneManager.LoadScene("GameplayScene");
     }
 }
